@@ -6,6 +6,7 @@ import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.data.NotesDao
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -44,19 +45,52 @@ class DataViewModel(
                 }
             }
             is Events.SaveNote -> {
+                val id = state.value.selectedNote.id
                 val title = state.value.title
                 val desc = state.value.description
                 if (title.isBlank() || desc.isBlank()) {
                     return
                 }
-                val data = Notes(
-                    title = title,
-                    description = desc
-                )
+                val data = if (id == -1) {
+                    Notes(
+                        title = title,
+                        description = desc
+                    )
+                } else {
+                    Notes(
+                        id = id,
+                        title = title,
+                        description = desc
+                    )
+                }
+
                 viewModelScope.launch {
                     dao.upsert(data)
+                    delay(1000L)
+                    _state.update { it.copy(
+                        selectedNote = Notes(id = -1, title = "", description = ""),
+                        title = "",
+                        description = ""
+                    ) }
+                }
+            }
+            is Events.SetSelectedNote -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(
+                        title = event.note.title,
+                        description = event.note.description,
+                        selectedNote = event.note
+                    ) }
+                }
+            }
+
+            Events.DeleteNote -> {
+                val selectedNote = state.value.selectedNote
+                viewModelScope.launch {
+                    dao.delete(selectedNote)
                 }
                 _state.update { it.copy(
+                    selectedNote = Notes(id = -1, title = "", description = ""),
                     title = "",
                     description = ""
                 ) }

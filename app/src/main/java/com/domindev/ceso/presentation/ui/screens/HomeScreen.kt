@@ -1,5 +1,6 @@
 package com.domindev.ceso.presentation.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -19,8 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
 import com.domindev.ceso.data.Notes
-import com.domindev.ceso.presentation.ui.navigation.AddNoteScreen
-import com.domindev.ceso.presentation.ui.theme.CesoTheme
+import com.domindev.ceso.presentation.ui.navigation.NoteScreen
 
 @Composable
 fun HomeScreen(
@@ -28,22 +28,22 @@ fun HomeScreen(
     onEvent: (Events) -> Unit,
     navigateTo: (Any) -> Unit
 ) {
-    CesoTheme {
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    navigateTo(AddNoteScreen)
-                }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
-                }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navigateTo(NoteScreen)
+            }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
             }
-        ) { padding ->
-            LazyVerticalStaggeredGrid(
-                contentPadding = padding,
-                columns = StaggeredGridCells.Fixed(2)
-            ) {
-                items(state.notes) { note ->
-                    NoteItem(note = note)
+        }
+    ) { padding ->
+        LazyVerticalStaggeredGrid(
+            contentPadding = padding,
+            columns = StaggeredGridCells.Fixed(2)
+        ) {
+            items(state.notes) { note ->
+                NoteItem(note = note, onEvent = onEvent) {
+                    navigateTo(NoteScreen)
                 }
             }
         }
@@ -51,12 +51,20 @@ fun HomeScreen(
 }
 
 @Composable
-fun NoteItem(note: Notes) {
+fun NoteItem(
+    note: Notes,
+    onEvent: (Events) -> Unit,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable {
+                onEvent(Events.SetSelectedNote(note))
+                onClick()
+            }
     ) {
         Text(
             text = note.title,

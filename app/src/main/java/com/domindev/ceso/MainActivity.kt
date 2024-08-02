@@ -10,9 +10,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.domindev.ceso.app.MyApp
-import com.domindev.ceso.presentation.ui.navigation.AddNoteScreen
+import com.domindev.ceso.presentation.ui.navigation.NoteScreen
 import com.domindev.ceso.presentation.ui.navigation.HomeScreen
-import com.domindev.ceso.presentation.ui.screens.AddNoteScreen
+import com.domindev.ceso.presentation.ui.screens.NoteScreen
 import com.domindev.ceso.presentation.ui.screens.HomeScreen
 import com.domindev.ceso.presentation.ui.viewmodels.DataViewModel
 import com.domindev.ceso.presentation.ui.theme.CesoTheme
@@ -36,8 +36,10 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(it)
                         }
                     }
-                    composable<AddNoteScreen> {
-                        AddNoteScreen(state, viewModel::onEvent)
+                    composable<NoteScreen> {
+                        NoteScreen(state = state, onEvent = viewModel::onEvent) {
+                            navController.navigateUp()
+                        }
                     }
                 }
             }

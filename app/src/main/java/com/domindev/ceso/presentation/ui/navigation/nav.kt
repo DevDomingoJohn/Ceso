@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 object HomeScreen
 
 @Serializable
-object AddNoteScreen
+object NoteScreen
