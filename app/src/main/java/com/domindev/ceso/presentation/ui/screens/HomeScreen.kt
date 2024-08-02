@@ -16,9 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.domindev.ceso.Events
+import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
 import com.domindev.ceso.data.Notes
+import com.domindev.ceso.presentation.ui.navigation.AddNoteScreen
 import com.domindev.ceso.presentation.ui.theme.CesoTheme
 
 @Composable
@@ -31,7 +32,7 @@ fun HomeScreen(
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = {
-                    navigateTo(com.domindev.ceso.AddNoteScreen)
+                    navigateTo(AddNoteScreen)
                 }) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
                 }

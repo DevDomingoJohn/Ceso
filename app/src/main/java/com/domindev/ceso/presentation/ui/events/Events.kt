@@ -1,4 +1,4 @@
-package com.domindev.ceso
+package com.domindev.ceso.presentation.ui.events
 
 sealed interface Events {
     data class SetTitle(val title: String): Events

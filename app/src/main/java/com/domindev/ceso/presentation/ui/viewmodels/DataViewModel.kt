@@ -1,8 +1,8 @@
-package com.domindev.ceso.presentation.ui.viewmodel
+package com.domindev.ceso.presentation.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.domindev.ceso.Events
+import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.data.NotesDao

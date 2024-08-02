@@ -9,11 +9,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.domindev.ceso.app.MyApp
+import com.domindev.ceso.presentation.ui.navigation.AddNoteScreen
+import com.domindev.ceso.presentation.ui.navigation.HomeScreen
 import com.domindev.ceso.presentation.ui.screens.AddNoteScreen
 import com.domindev.ceso.presentation.ui.screens.HomeScreen
-import com.domindev.ceso.presentation.ui.viewmodel.DataViewModel
+import com.domindev.ceso.presentation.ui.viewmodels.DataViewModel
 import com.domindev.ceso.presentation.ui.theme.CesoTheme
-import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +44,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Serializable
-object HomeScreen
-
-@Serializable
-object AddNoteScreen
