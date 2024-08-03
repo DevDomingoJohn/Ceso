@@ -6,5 +6,6 @@ data class State(
     val notes: List<Notes> = emptyList(),
     val title: String = "",
     val description: String = "",
+    val onEdit: Boolean = false,
     val selectedNote: Notes = Notes(id = -1, title = "", description = "")
 )

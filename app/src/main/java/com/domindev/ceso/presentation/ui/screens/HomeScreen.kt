@@ -8,14 +8,21 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
@@ -35,6 +42,25 @@ fun HomeScreen(
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
             }
+        },
+        topBar = {
+            MyCustomTopBar(
+                title = "Search Notes",
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Account")
+                    }
+                },
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+                    .shadow(elevation = 3.dp, shape = RectangleShape)
+                    .clickable { /*TODO*/ }
+            )
         }
     ) { padding ->
         LazyVerticalStaggeredGrid(
@@ -63,6 +89,7 @@ fun NoteItem(
             .wrapContentHeight()
             .clickable {
                 onEvent(Events.SetSelectedNote(note))
+                onEvent(Events.ToggleEdit)
                 onClick()
             }
     ) {

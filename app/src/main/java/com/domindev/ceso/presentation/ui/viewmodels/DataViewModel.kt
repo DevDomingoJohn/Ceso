@@ -88,12 +88,21 @@ class DataViewModel(
                 val selectedNote = state.value.selectedNote
                 viewModelScope.launch {
                     dao.delete(selectedNote)
+                    delay(1000L)
+                    _state.update { it.copy(
+                        selectedNote = Notes(id = -1, title = "", description = ""),
+                        title = "",
+                        description = ""
+                    ) }
                 }
-                _state.update { it.copy(
-                    selectedNote = Notes(id = -1, title = "", description = ""),
-                    title = "",
-                    description = ""
-                ) }
+            }
+
+            Events.ToggleEdit -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(
+                        onEdit = !state.value.onEdit
+                    ) }
+                }
             }
         }
     }
