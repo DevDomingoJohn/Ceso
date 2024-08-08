@@ -3,11 +3,8 @@ package com.domindev.ceso.presentation.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -23,14 +20,16 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -44,16 +43,19 @@ import com.domindev.ceso.presentation.ui.theme.bodyFontFamily
 import com.domindev.ceso.presentation.ui.theme.displayFontFamily
 import com.domindev.ceso.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     state: State,
     onEvent: (Events) -> Unit,
     navigateTo: (Any) -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 navigateTo(NoteScreen)
+                onEvent(Events.ToggleFocus)
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
             }
@@ -81,12 +83,14 @@ fun HomeScreen(
                         Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Account")
                     }
                 },
+                scrollBehavior = scrollBehavior,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
                     .shadow(elevation = 3.dp, shape = RectangleShape)
                     .clickable { /*TODO*/ }
             )
-        }
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
         if (!state.columnView) {
             LazyVerticalStaggeredGrid(
@@ -124,7 +128,7 @@ fun NoteItem(
             .padding(4.dp)
             .fillMaxWidth()
 
-            .heightIn(min = Dp.Unspecified,max = 300.dp)
+            .heightIn(min = Dp.Unspecified, max = 300.dp)
             .clickable {
                 onEvent(Events.SetSelectedNote(note))
                 onEvent(Events.ToggleEdit)
@@ -151,6 +155,7 @@ fun NoteItem(
 fun MyCustomTopBar(
     modifier: Modifier = Modifier,
     title: String,
+    scrollBehavior: TopAppBarScrollBehavior?,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit
 ) {
@@ -158,6 +163,7 @@ fun MyCustomTopBar(
         title = { Text(text = title)},
         navigationIcon = navigationIcon,
         actions = actions,
+        scrollBehavior = scrollBehavior,
         modifier = modifier
     )
 }

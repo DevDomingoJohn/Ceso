@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -40,6 +41,7 @@ import com.domindev.ceso.presentation.ui.theme.displayFontFamily
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(
     state: State,
@@ -57,6 +59,7 @@ fun NoteScreen(
                             navigateBack()
                             onEvent(Events.SaveNote)
                             onEvent(Events.ToggleEdit)
+                            if (state.isFocus) onEvent(Events.ToggleFocus)
                         }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -75,7 +78,8 @@ fun NoteScreen(
                                 contentDescription = "Delete"
                             )
                         }
-                    }
+                    },
+                    scrollBehavior = null
                 )
             } else {
                 MyCustomTopBar(
@@ -91,7 +95,8 @@ fun NoteScreen(
                             )
                         }
                     },
-                    actions = {}
+                    actions = {},
+                    scrollBehavior = null
                 )
             }
         }
@@ -133,10 +138,10 @@ fun NoteScreen(
                 placeholder = {
                     Text(
                         text = "Description",
-                        fontSize = 18.sp,
+                        fontSize = 24.sp,
                         fontFamily = bodyFontFamily
                     )},
-                textStyle = TextStyle(fontSize = 18.sp, fontFamily = bodyFontFamily),
+                textStyle = TextStyle(fontSize = 24.sp, fontFamily = bodyFontFamily),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -157,17 +162,18 @@ fun NoteScreen(
     var backPressHandled by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+    if (state.isFocus) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
     }
 
     BackHandler(
         enabled = !backPressHandled
     ) {
         onEvent(Events.SaveNote)
-        if (state.onEdit) {
-            onEvent(Events.ToggleEdit)
-        }
+        if (state.onEdit) onEvent(Events.ToggleEdit)
+        if (state.isFocus) onEvent(Events.ToggleFocus)
         backPressHandled = true
         coroutineScope.launch {
             awaitFrame()

@@ -112,6 +112,14 @@ class DataViewModel(
                     ) }
                 }
             }
+
+            Events.ToggleFocus -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(
+                        isFocus = !state.value.isFocus
+                    ) }
+                }
+            }
         }
     }
 }
