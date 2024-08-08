@@ -7,6 +7,7 @@ sealed interface Events {
     data class SetDescription(val desc: String): Events
     data class SetSelectedNote(val note: Notes): Events
     data object ToggleEdit: Events
+    data object ToggleView: Events
     data object SaveNote: Events
     data object DeleteNote: Events
 }

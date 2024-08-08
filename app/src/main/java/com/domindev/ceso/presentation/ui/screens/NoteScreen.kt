@@ -81,7 +81,10 @@ fun NoteScreen(
                 MyCustomTopBar(
                     title = "",
                     navigationIcon = {
-                        IconButton(onClick = { navigateBack() }) {
+                        IconButton(onClick = {
+                            navigateBack()
+                            onEvent(Events.SaveNote)
+                        }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Arrow Back"

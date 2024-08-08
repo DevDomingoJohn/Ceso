@@ -7,5 +7,6 @@ data class State(
     val title: String = "",
     val description: String = "",
     val onEdit: Boolean = false,
-    val selectedNote: Notes = Notes(id = -1, title = "", description = "")
+    val selectedNote: Notes = Notes(id = -1, title = "", description = ""),
+    val columnView: Boolean = false
 )

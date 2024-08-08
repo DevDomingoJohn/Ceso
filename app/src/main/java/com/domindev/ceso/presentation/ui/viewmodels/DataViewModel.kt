@@ -104,6 +104,14 @@ class DataViewModel(
                     ) }
                 }
             }
+
+            Events.ToggleView -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(
+                        columnView = !state.value.columnView
+                    ) }
+                }
+            }
         }
     }
 }
