@@ -75,7 +75,7 @@ fun HomeScreen(
                         }
                     } else {
                         IconButton(onClick = { onEvent(Events.ToggleView) }) {
-                            Icon(painter = painterResource(id = R.drawable.baseline_view_agenda_24), contentDescription = "Account")
+                            Icon(painter = painterResource(id = R.drawable.outline_view_agenda_24), contentDescription = "Account")
                         }
                     }
 

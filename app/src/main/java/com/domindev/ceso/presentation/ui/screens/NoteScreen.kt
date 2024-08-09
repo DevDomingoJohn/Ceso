@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -31,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.domindev.ceso.presentation.ui.events.Events
 import com.domindev.ceso.presentation.state.State
@@ -40,6 +42,7 @@ import com.domindev.ceso.presentation.ui.theme.bodyFontFamily
 import com.domindev.ceso.presentation.ui.theme.displayFontFamily
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
+import com.domindev.ceso.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +71,9 @@ fun NoteScreen(
                         }
                     },
                     actions = {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(painter = painterResource(id = R.drawable.outline_push_pin_24), contentDescription = "pin")
+                        }
                         IconButton(onClick = {
                             navigateBack()
                             onEvent(Events.DeleteNote)
@@ -107,6 +113,7 @@ fun NoteScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .verticalScroll(rememberScrollState())
         ) {
             TextField(
                 value = state.title,
@@ -130,7 +137,6 @@ fun NoteScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 12.dp)
             )
             TextField(
                 value = state.description,
@@ -152,8 +158,7 @@ fun NoteScreen(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-                    .fillMaxHeight(0.9f)
+                    .fillMaxHeight()
                     .focusRequester(focusRequester)
             )
         }
