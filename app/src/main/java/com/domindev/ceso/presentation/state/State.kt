@@ -9,5 +9,6 @@ data class State(
     val onEdit: Boolean = false,
     val selectedNote: Notes = Notes(id = -1, title = "", description = ""),
     val columnView: Boolean = false,
-    val isFocus: Boolean = false
+    val isFocus: Boolean = false,
+    val isSearching: Boolean = false
 )

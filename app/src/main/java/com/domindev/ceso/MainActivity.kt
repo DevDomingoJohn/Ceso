@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
                 factory = ViewModelFactoryHelper(MyApp.appModule.dao)
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
+
             val navController = rememberNavController()
             CesoTheme {
                 NavHost(
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = HomeScreen
                 ) {
                     composable<HomeScreen> {
-                        HomeScreen(state, viewModel::onEvent) {
+                        HomeScreen(viewModel, state, viewModel::onEvent) {
                             navController.navigate(it)
                         }
                     }

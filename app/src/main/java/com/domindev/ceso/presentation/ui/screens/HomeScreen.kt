@@ -1,6 +1,7 @@
 package com.domindev.ceso.presentation.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -11,8 +12,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,12 +23,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
@@ -42,14 +48,18 @@ import com.domindev.ceso.presentation.ui.navigation.NoteScreen
 import com.domindev.ceso.presentation.ui.theme.bodyFontFamily
 import com.domindev.ceso.presentation.ui.theme.displayFontFamily
 import com.domindev.ceso.R
+import com.domindev.ceso.presentation.ui.viewmodels.DataViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    viewModel: DataViewModel,
     state: State,
     onEvent: (Events) -> Unit,
     navigateTo: (Any) -> Unit
 ) {
+    val notes by viewModel.notes.collectAsState()
+    val searchText by viewModel.searchText.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         floatingActionButton = {
@@ -61,36 +71,48 @@ fun HomeScreen(
             }
         },
         topBar = {
-            MyCustomTopBar(
-                title = "Search Notes",
-                navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
-                    }
-                },
-                actions = {
-                    if (!state.columnView) {
-                        IconButton(onClick = { onEvent(Events.ToggleView) }) {
-                            Icon(painter = painterResource(id = R.drawable.baseline_grid_view_24), contentDescription = "Account")
+            if (state.isSearching) {
+                SearchBar(state = state, searchQuery = searchText, searchResult = notes, onEvent = onEvent) {
+                    navigateTo(NoteScreen)
+                }
+            } else {
+                MyCustomTopBar(
+                    title = "Search Notes",
+                    navigationIcon = {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                         }
-                    } else {
-                        IconButton(onClick = { onEvent(Events.ToggleView) }) {
-                            Icon(painter = painterResource(id = R.drawable.outline_view_agenda_24), contentDescription = "Account")
+                    },
+                    actions = {
+                        if (!state.columnView) {
+                            IconButton(onClick = { onEvent(Events.ToggleView) }) {
+                                Icon(painter = painterResource(id = R.drawable.baseline_grid_view_24), contentDescription = "Account")
+                            }
+                        } else {
+                            IconButton(onClick = { onEvent(Events.ToggleView) }) {
+                                Icon(painter = painterResource(id = R.drawable.outline_view_agenda_24), contentDescription = "Account")
+                            }
                         }
-                    }
 
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Account")
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
-                    .shadow(elevation = 3.dp, shape = RectangleShape)
-                    .clickable { /*TODO*/ }
-            )
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Account")
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+                        .shadow(elevation = 3.dp, shape = RectangleShape)
+                        .clickable { onEvent(Events.SetSearch(true)) }
+                )
+            }
+
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = if (!state.isSearching) {
+            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        } else {
+            Modifier
+        }
+
     ) { padding ->
         if (!state.columnView) {
             LazyVerticalStaggeredGrid(
@@ -127,7 +149,6 @@ fun NoteItem(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-
             .heightIn(min = Dp.Unspecified, max = 300.dp)
             .clickable {
                 onEvent(Events.SetSelectedNote(note))
@@ -166,4 +187,71 @@ fun MyCustomTopBar(
         scrollBehavior = scrollBehavior,
         modifier = modifier
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(
+    state: State,
+    searchQuery: String,
+    searchResult: List<Notes>,
+    onEvent: (Events) -> Unit,
+    onClick: () -> Unit
+) {
+    SearchBar(
+        query = searchQuery,
+        onQueryChange = { onEvent(Events.SetSearchText(it)) },
+        onSearch = {},
+        placeholder = {
+            Text(text = "Search Notes", fontFamily = displayFontFamily)
+        },
+        active = state.isSearching,
+        onActiveChange = {
+            onEvent(Events.SetSearch(it))
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back Icon",
+                modifier = Modifier.clickable {
+                    onEvent(Events.SetSearchText(""))
+                    onEvent(Events.SetSearch(false))
+                }
+            )
+        },
+        trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close Icon",
+                    modifier = Modifier.clickable {
+                        onEvent(Events.SetSearchText(""))
+                    }
+                )
+            }
+        }
+    ) {
+        if (!state.columnView) {
+            LazyVerticalStaggeredGrid(
+                contentPadding = PaddingValues(vertical = 8.dp),
+                columns = StaggeredGridCells.Fixed(2)
+            ) {
+                items(searchResult) { note ->
+                    NoteItem(note = note, onEvent = onEvent) {
+                        onClick()
+                    }
+                }
+            }
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(searchResult) { note ->
+                    NoteItem(note = note, onEvent = onEvent) {
+                        onClick()
+                    }
+                }
+            }
+        }
+    }
 }
