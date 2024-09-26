@@ -9,13 +9,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.domindev.ceso.app.MyApp
-import com.domindev.ceso.presentation.ui.navigation.NoteScreen
-import com.domindev.ceso.presentation.ui.navigation.HomeScreen
-import com.domindev.ceso.presentation.ui.screens.NoteScreen
-import com.domindev.ceso.presentation.ui.screens.HomeScreen
-import com.domindev.ceso.presentation.ui.viewmodels.DataViewModel
-import com.domindev.ceso.presentation.ui.theme.CesoTheme
+import com.domindev.ceso.ui.navigation.NoteScreen
+import com.domindev.ceso.ui.navigation.HomeScreen
+import com.domindev.ceso.ui.screens.NoteScreen
+import com.domindev.ceso.ui.screens.HomeScreen
+import com.domindev.ceso.ui.viewmodel.DataViewModel
+import com.domindev.ceso.ui.theme.CesoTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +24,6 @@ class MainActivity : ComponentActivity() {
                 factory = ViewModelFactoryHelper(MyApp.appModule.dao)
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
-
             val navController = rememberNavController()
             CesoTheme {
                 NavHost(

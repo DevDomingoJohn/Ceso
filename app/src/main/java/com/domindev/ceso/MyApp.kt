@@ -1,4 +1,4 @@
-package com.domindev.ceso.app
+package com.domindev.ceso
 
 import android.app.Application
 import com.domindev.ceso.di.AppModule

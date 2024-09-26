@@ -1,4 +1,4 @@
-package com.domindev.ceso.presentation.ui.screens
+package com.domindev.ceso.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -11,13 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,18 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import com.domindev.ceso.presentation.ui.events.Events
-import com.domindev.ceso.presentation.state.State
-import com.domindev.ceso.presentation.ui.theme.bodyFontFamily
-import com.domindev.ceso.presentation.ui.theme.displayFontFamily
+import com.domindev.ceso.ui.event.Events
+import com.domindev.ceso.ui.state.State
+import com.domindev.ceso.ui.theme.bodyFontFamily
+import com.domindev.ceso.ui.theme.displayFontFamily
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
-import com.domindev.ceso.R
+import com.domindev.ceso.ui.components.NoteScreenTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(
     state: State,
@@ -54,66 +45,9 @@ fun NoteScreen(
     navigateBack: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            if (state.onEdit) {
-                MyCustomTopBar(
-                    title = "",
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            navigateBack()
-                            onEvent(Events.SaveNote)
-                            onEvent(Events.ToggleEdit)
-                            if (state.isFocus) onEvent(Events.ToggleFocus)
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Arrow Back"
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = {
-                            /*TODO*/
-                        }) {
-                            Icon(painter = painterResource(id = R.drawable.outline_push_pin_24), contentDescription = "Pin Icon")
-                        }
-                        IconButton(onClick = {
-                            /*TODO*/
-                        }) {
-                            Icon(imageVector = Icons.Default.Share, contentDescription = "Share Icon")
-                        }
-                        IconButton(onClick = {
-                            navigateBack()
-                            onEvent(Events.DeleteNote)
-                            onEvent(Events.ToggleEdit)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete"
-                            )
-                        }
-                    },
-                    scrollBehavior = null
-                )
-            } else {
-                MyCustomTopBar(
-                    title = "",
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            navigateBack()
-                            onEvent(Events.SaveNote)
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Arrow Back"
-                            )
-                        }
-                    },
-                    actions = {},
-                    scrollBehavior = null
-                )
-            }
-        }
+        topBar = { NoteScreenTopBar(state = state, onEvent = onEvent) {
+            navigateBack()
+        } }
     ) { padding ->
         Column(
             verticalArrangement = Arrangement.Top,

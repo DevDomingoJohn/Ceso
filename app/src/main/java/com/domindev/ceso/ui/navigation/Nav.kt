@@ -1,4 +1,4 @@
-package com.domindev.ceso.presentation.ui.navigation
+package com.domindev.ceso.ui.navigation
 
 import kotlinx.serialization.Serializable
 

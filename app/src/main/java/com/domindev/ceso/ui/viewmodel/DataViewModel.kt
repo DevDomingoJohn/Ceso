@@ -1,9 +1,9 @@
-package com.domindev.ceso.presentation.ui.viewmodels
+package com.domindev.ceso.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.domindev.ceso.presentation.ui.events.Events
-import com.domindev.ceso.presentation.state.State
+import com.domindev.ceso.ui.event.Events
+import com.domindev.ceso.ui.state.State
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.data.NotesDao
 import kotlinx.coroutines.delay

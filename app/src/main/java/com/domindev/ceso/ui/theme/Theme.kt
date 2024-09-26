@@ -1,4 +1,4 @@
-package com.domindev.ceso.presentation.ui.theme
+package com.domindev.ceso.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

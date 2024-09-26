@@ -1,4 +1,4 @@
-package com.domindev.ceso.presentation.ui.events
+package com.domindev.ceso.ui.event
 
 import com.domindev.ceso.data.Notes
 
