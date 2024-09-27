@@ -1,5 +1,8 @@
 package com.domindev.ceso.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
 import com.domindev.ceso.ui.navigation.NoteScreen
@@ -29,6 +33,8 @@ import com.domindev.ceso.ui.components.CesoNavigationDrawer
 import com.domindev.ceso.ui.components.NoteItem
 import com.domindev.ceso.ui.components.SearchBar
 import com.domindev.ceso.ui.viewmodel.DataViewModel
+import com.domindev.ceso.util.getFileNameFromUri
+import com.domindev.ceso.util.readTextFileFromUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +44,19 @@ fun HomeScreen(
     onEvent: (Events) -> Unit,
     navigateTo: (Any) -> Unit
 ) {
+    val context = LocalContext.current
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri: Uri? ->
+            uri?.let {
+                val fileName = getFileNameFromUri(context = context, it)
+                val fileContent = readTextFileFromUri(context = context, uri = it)
+                onEvent(Events.SetTitle("$fileName"))
+                onEvent(Events.SetDescription("$fileContent"))
+                navigateTo(NoteScreen)
+            }
+        }
+    )
     val notes by viewModel.notes.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -45,7 +64,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        CesoNavigationDrawer(state = state) {
+        CesoNavigationDrawer(state = state, onClick = { filePickerLauncher.launch(arrayOf("text/plain"))}) {
             Scaffold(
                 floatingActionButton = {
                     FloatingActionButton(onClick = {

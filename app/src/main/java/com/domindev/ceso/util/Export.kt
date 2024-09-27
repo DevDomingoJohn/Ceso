@@ -15,7 +15,7 @@ fun exportNote(
     description: String
 ) {
     val fileName = title
-    val fileContents = "$title\n\n$description"
+    val fileContents = description
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         val contentValues = ContentValues().apply {

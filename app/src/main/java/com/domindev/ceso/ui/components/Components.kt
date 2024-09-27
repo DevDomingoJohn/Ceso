@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -238,12 +239,17 @@ data class NavigationItem(
 @Composable
 fun CesoNavigationDrawer(
     state: State,
+    onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val items = listOf(
         NavigationItem(
             title = "Home",
             icon = Icons.Outlined.Home
+        ),
+        NavigationItem(
+            title = "Import",
+            icon = Icons.Outlined.KeyboardArrowDown
         ),
         NavigationItem(
             title = "Trash",
@@ -277,6 +283,9 @@ fun CesoNavigationDrawer(
                         onClick = {
                             state.selectedItem.value = index
                             coroutineScope.launch {
+                                if (index == 1) {
+                                   onClick()
+                                }
                                 state.drawerState.close()
                             }
                         },
