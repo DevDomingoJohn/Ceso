@@ -1,5 +1,6 @@
 package com.domindev.ceso.ui.event
 
+import android.content.Context
 import com.domindev.ceso.data.Notes
 
 sealed interface Events {
@@ -13,4 +14,6 @@ sealed interface Events {
     data object ToggleFocus: Events
     data object SaveNote: Events
     data object DeleteNote: Events
+
+    data class ShareNote(val context: Context): Events
 }

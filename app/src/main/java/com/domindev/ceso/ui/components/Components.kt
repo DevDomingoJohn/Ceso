@@ -1,5 +1,6 @@
 package com.domindev.ceso.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -163,6 +165,7 @@ fun CesoHomeTopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreenTopBar(
+    context: Context = LocalContext.current,
     state: State,
     onEvent: (Events) -> Unit,
     navigateBack: () -> Unit
@@ -190,7 +193,7 @@ fun NoteScreenTopBar(
                     Icon(painter = painterResource(id = R.drawable.outline_push_pin_24), contentDescription = "Pin Icon")
                 }
                 IconButton(onClick = {
-                    /*TODO*/
+                    onEvent(Events.ShareNote(context = context))
                 }) {
                     Icon(imageVector = Icons.Default.Share, contentDescription = "Share Icon")
                 }
