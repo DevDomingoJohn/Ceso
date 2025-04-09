@@ -25,9 +25,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.domindev.ceso.NoteScreen
 import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
-import com.domindev.ceso.ui.navigation.NoteScreen
 import com.domindev.ceso.ui.components.CesoHomeTopBar
 import com.domindev.ceso.ui.components.CesoNavigationDrawer
 import com.domindev.ceso.ui.components.NoteItem
@@ -41,6 +42,7 @@ import com.domindev.ceso.util.readTextFileFromUri
 fun HomeScreen(
     viewModel: DataViewModel,
     state: State,
+    navController: NavHostController,
     onEvent: (Events) -> Unit,
     navigateTo: (Any) -> Unit
 ) {
@@ -64,7 +66,8 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        CesoNavigationDrawer(state = state, onClick = { filePickerLauncher.launch(arrayOf("text/plain"))}) {
+        // onClick = { filePickerLauncher.launch(arrayOf("text/plain"))}
+        CesoNavigationDrawer(state, navController) {
             Scaffold(
                 floatingActionButton = {
                     FloatingActionButton(onClick = {

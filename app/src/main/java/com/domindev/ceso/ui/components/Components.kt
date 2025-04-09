@@ -46,9 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.domindev.ceso.R
+import com.domindev.ceso.SettingsScreen
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.ui.event.Events
+import com.domindev.ceso.ui.screens.SettingsScreen
 import com.domindev.ceso.ui.state.State
 import com.domindev.ceso.ui.theme.bodyFontFamily
 import com.domindev.ceso.ui.theme.displayFontFamily
@@ -239,7 +243,8 @@ data class NavigationItem(
 @Composable
 fun CesoNavigationDrawer(
     state: State,
-    onClick: () -> Unit,
+    navController: NavHostController,
+    //onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val items = listOf(
@@ -281,10 +286,16 @@ fun CesoNavigationDrawer(
                         icon = { Icon(imageVector = item.icon, contentDescription = item.title)},
                         selected = index == state.selectedItem.value,
                         onClick = {
-                            state.selectedItem.value = index
+                            if (index == 0 || index == 2)
+                                state.selectedItem.value = index
+                            
                             coroutineScope.launch {
-                                if (index == 1) {
-                                   onClick()
+//                                if (index == 1) {
+//                                   onClick()
+//                                }
+                                if (index == 3 && state.selectedItem.value != index) {
+                                    state.selectedItem.value = index
+                                    navController.navigate(SettingsScreen)
                                 }
                                 state.drawerState.close()
                             }
