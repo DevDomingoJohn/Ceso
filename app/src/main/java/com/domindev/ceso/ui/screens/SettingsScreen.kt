@@ -6,15 +6,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.domindev.ceso.MyApp
+import com.domindev.ceso.R
 import com.domindev.ceso.ui.components.CesoNavigationDrawer
 import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
@@ -27,10 +31,8 @@ fun SettingsScreen(
     onEvent: (Events) -> Unit,
     navigateBack: () -> Unit
 ) {
-    var darkMode by remember { mutableStateOf(false) }
-    var fontSize by remember { mutableIntStateOf(16) }
-    var autoSave by remember { mutableStateOf(true) }
-    var backupEnabled by remember { mutableStateOf(true) }
+    val themeState by MyApp.appModule.themeState.collectAsStateWithLifecycle()
+
     var syncEnabled by remember { mutableStateOf(false) }
 
     CesoNavigationDrawer(state,navController) {
@@ -41,7 +43,7 @@ fun SettingsScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigateBack() // TODO
+                                navigateBack()
                             }
                         ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -59,38 +61,24 @@ fun SettingsScreen(
                 // Appearance Section
                 SettingsSection(title = "Appearance") {
                     SettingsSwitchItem(
-                        icon = Icons.Default.Favorite,
-                        //icon = Icons.Default.DarkMode,
+                        icon = ImageVector.vectorResource(R.drawable.dark_mode_24),
                         title = "Dark Mode",
-                        checked = darkMode,
-                        onCheckedChange = { darkMode = it }
-                    )
-                    SettingsSliderItem(
-                        icon = Icons.Default.Create,
-                        //icon = Icons.Default.TextFields,
-                        title = "Font Size",
-                        value = fontSize.toFloat(),
-                        onValueChange = { fontSize = it.toInt() },
-                        valueRange = 12f..24f,
-                        valueText = "${fontSize}sp"
+                        checked = themeState.isDarkTheme,
+                        onCheckedChange = { MyApp.appModule.setDarkTheme(it) }
                     )
                 }
 
-                // Note Settings Section
-                SettingsSection(title = "Note Settings") {
-                    SettingsSwitchItem(
-                        icon = Icons.AutoMirrored.Default.Send,
-                        // icon = Icons.Default.Save,
-                        title = "Auto Save",
-                        checked = autoSave,
-                        onCheckedChange = { autoSave = it }
+                // Extras Section
+                SettingsSection(title = "Import & Export") {
+                    SettingsItem(
+                        icon = ImageVector.vectorResource(R.drawable.file_download_24),
+                        title = "Import Notes",
+                        // onClick = {}
                     )
-                    SettingsSwitchItem(
-                        icon = Icons.Default.MailOutline,
-                        // icon = Icons.Default.Backup,
-                        title = "Backup Notes",
-                        checked = backupEnabled,
-                        onCheckedChange = { backupEnabled = it }
+                    SettingsItem(
+                        icon = ImageVector.vectorResource(R.drawable.upload_file_24),
+                        title = "Export Notes",
+                        // onClick = {}
                     )
                 }
 
@@ -120,18 +108,6 @@ fun SettingsScreen(
                         title = "Version",
                         subtitle = "1.0.0"
                     )
-                    SettingsItem(
-                        icon = Icons.Default.Lock,
-                        // icon = Icons.Default.PrivacyTip,
-                        title = "Privacy Policy",
-                        onClick = { /* Handle privacy policy */ }
-                    )
-                    SettingsItem(
-                        icon = Icons.Default.ThumbUp,
-                        // icon = Icons.Default.Description,
-                        title = "Terms of Service",
-                        onClick = { /* Handle terms of service */ }
-                    )
                 }
             }
         }
@@ -158,7 +134,7 @@ private fun SettingsSection(
 
 @Composable
 private fun SettingsItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null
@@ -208,7 +184,7 @@ private fun SettingsItem(
 
 @Composable
 private fun SettingsSwitchItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
@@ -243,7 +219,7 @@ private fun SettingsSwitchItem(
 
 @Composable
 private fun SettingsSliderItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     title: String,
     value: Float,
     onValueChange: (Float) -> Unit,

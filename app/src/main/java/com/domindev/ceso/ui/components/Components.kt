@@ -253,10 +253,6 @@ fun CesoNavigationDrawer(
             icon = Icons.Outlined.Home
         ),
         NavigationItem(
-            title = "Import",
-            icon = Icons.Outlined.KeyboardArrowDown
-        ),
-        NavigationItem(
             title = "Trash",
             icon = Icons.Outlined.Delete
         ),
@@ -286,15 +282,14 @@ fun CesoNavigationDrawer(
                         icon = { Icon(imageVector = item.icon, contentDescription = item.title)},
                         selected = index == state.selectedItem.value,
                         onClick = {
-                            if (index == 0 || index == 2)
+                            if (index == 0 || index == 1 || index == 3)
                                 state.selectedItem.value = index
                             
                             coroutineScope.launch {
 //                                if (index == 1) {
 //                                   onClick()
 //                                }
-                                if (index == 3 && state.selectedItem.value != index) {
-                                    state.selectedItem.value = index
+                                if (index == 2) {
                                     navController.navigate(SettingsScreen)
                                 }
                                 state.drawerState.close()

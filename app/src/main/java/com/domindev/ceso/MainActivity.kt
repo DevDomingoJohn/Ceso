@@ -20,12 +20,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val viewModel = viewModel<DataViewModel> (
+            val viewModel = viewModel<DataViewModel>(
                 factory = ViewModelFactoryHelper(MyApp.appModule.dao)
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()
-            CesoTheme {
+            val themeState by MyApp.appModule.themeState.collectAsStateWithLifecycle()
+
+            CesoTheme(darkTheme = themeState.isDarkTheme) {
                 NavHost(
                     navController = navController,
                     startDestination = HomeScreen
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<SettingsScreen> {
                         SettingsScreen(state, navController, viewModel::onEvent) {
-                            navController.navigate(it)
+                            navController.navigateUp()
                         }
                     }
                 }
