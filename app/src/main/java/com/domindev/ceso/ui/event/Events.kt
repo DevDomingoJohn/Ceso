@@ -16,4 +16,5 @@ sealed interface Events {
     data object DeleteNote: Events
 
     data class ShareNote(val context: Context): Events
+    data class ExportNotes(val context: Context): Events
 }

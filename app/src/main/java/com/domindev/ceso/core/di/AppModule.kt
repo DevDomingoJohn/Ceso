@@ -1,4 +1,4 @@
-package com.domindev.ceso.di
+package com.domindev.ceso.core.di
 
 import android.content.Context
 import androidx.room.Room
@@ -7,7 +7,7 @@ import com.domindev.ceso.data.NotesDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.core.content.edit
-import com.domindev.ceso.ThemeState
+import com.domindev.ceso.core.ThemeState
 import kotlinx.coroutines.flow.update
 
 interface AppModule {

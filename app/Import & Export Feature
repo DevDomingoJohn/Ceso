@@ -1,0 +1,12 @@
+Export:
+- Loop through state.notes.
+- Use export util on each note.
+- Save each note on a newly created zip folder.
+
+Import Single:
+- Selected a single txt file to import.
+- You can view or edit the content in the note screen before saving it.
+
+Import Multiple:
+- Selecting a zip or folder of exported txt notes.
+- Loop through each notes and store to the database.

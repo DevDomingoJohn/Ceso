@@ -1,8 +1,8 @@
-package com.domindev.ceso
+package com.domindev.ceso.core
 
 import android.app.Application
-import com.domindev.ceso.di.AppModule
-import com.domindev.ceso.di.AppModuleImpl
+import com.domindev.ceso.core.di.AppModule
+import com.domindev.ceso.core.di.AppModuleImpl
 
 class MyApp: Application() {
     companion object {

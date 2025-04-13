@@ -1,4 +1,4 @@
-package com.domindev.ceso
+package com.domindev.ceso.core.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

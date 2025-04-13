@@ -6,7 +6,8 @@ import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.data.NotesDao
-import com.domindev.ceso.util.exportNote
+import com.domindev.ceso.core.util.exportNote
+import com.domindev.ceso.core.util.exportNotes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -158,6 +159,15 @@ class DataViewModel(
                         context = event.context,
                         title = _state.value.title,
                         description = _state.value.description
+                    )
+                }
+            }
+
+            is Events.ExportNotes -> {
+                viewModelScope.launch {
+                    exportNotes(
+                        context = event.context,
+                        notes = state.value.notes
                     )
                 }
             }

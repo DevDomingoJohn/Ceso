@@ -1,4 +1,4 @@
-package com.domindev.ceso.util
+package com.domindev.ceso.core.util
 
 import android.content.Context
 import android.net.Uri

@@ -1,5 +1,8 @@
 package com.domindev.ceso.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,16 +15,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.domindev.ceso.MyApp
+import com.domindev.ceso.core.MyApp
+import com.domindev.ceso.NoteScreen
 import com.domindev.ceso.R
 import com.domindev.ceso.ui.components.CesoNavigationDrawer
 import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
+import com.domindev.ceso.core.util.getFileNameFromUri
+import com.domindev.ceso.core.util.readTextFileFromUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,11 +36,25 @@ fun SettingsScreen(
     state: State,
     navController: NavHostController,
     onEvent: (Events) -> Unit,
-    navigateBack: () -> Unit
+    navigateTo: (Any?) -> Unit
 ) {
     val themeState by MyApp.appModule.themeState.collectAsStateWithLifecycle()
 
     var syncEnabled by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri: Uri? ->
+            uri?.let {
+                val fileName = getFileNameFromUri(context = context, it)
+                val fileContent = readTextFileFromUri(context = context, uri = it)
+                onEvent(Events.SetTitle("$fileName"))
+                onEvent(Events.SetDescription("$fileContent"))
+                navigateTo(NoteScreen)
+            }
+        }
+    )
 
     CesoNavigationDrawer(state,navController) {
         Scaffold(
@@ -43,7 +64,7 @@ fun SettingsScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigateBack()
+                                navigateTo(null)
                             }
                         ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -73,12 +94,12 @@ fun SettingsScreen(
                     SettingsItem(
                         icon = ImageVector.vectorResource(R.drawable.file_download_24),
                         title = "Import Notes",
-                        // onClick = {}
+                        onClick = { filePickerLauncher.launch(arrayOf("text/plain"))}
                     )
                     SettingsItem(
                         icon = ImageVector.vectorResource(R.drawable.upload_file_24),
                         title = "Export Notes",
-                        // onClick = {}
+                        onClick = { onEvent(Events.ExportNotes(context)) }
                     )
                 }
 

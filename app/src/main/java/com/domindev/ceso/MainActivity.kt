@@ -9,6 +9,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.domindev.ceso.core.MyApp
+import com.domindev.ceso.core.util.ViewModelFactoryHelper
 import com.domindev.ceso.ui.screens.NoteScreen
 import com.domindev.ceso.ui.screens.HomeScreen
 import com.domindev.ceso.ui.screens.SettingsScreen
@@ -43,8 +45,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable<SettingsScreen> {
-                        SettingsScreen(state, navController, viewModel::onEvent) {
-                            navController.navigateUp()
+                        SettingsScreen(state, navController, viewModel::onEvent) { route ->
+                            if (route == null) navController.navigateUp()
+                            else navController.navigate(route)
                         }
                     }
                 }
