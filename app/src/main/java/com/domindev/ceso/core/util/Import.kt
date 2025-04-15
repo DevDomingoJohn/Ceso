@@ -1,36 +1,42 @@
 package com.domindev.ceso.core.util
 
-import android.content.Context
+import android.content.ContentResolver
 import android.net.Uri
-import android.provider.OpenableColumns
+import com.domindev.ceso.data.Notes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
-fun readTextFileFromUri(
-    context: Context,
-    uri: Uri
-): String? {
-    // Read the file from the URI (assuming the URI was obtained correctly)
-    return try {
-        context.contentResolver.openInputStream(uri)?.use { inputStream ->
-            inputStream.bufferedReader().use { it.readText() }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
+suspend fun readZipFile(
+    contentResolver: ContentResolver,
+    zipUri: Uri
+): List<Notes> = withContext(Dispatchers.IO) {
+    val files = mutableListOf<Notes>()
 
-fun getFileNameFromUri(context: Context, uri: Uri): String? {
-    var fileName: String? = null
-    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    contentResolver.openInputStream(zipUri)?.use { inputStream ->
+        ZipInputStream(inputStream).use { zipStream ->
+            var entry: ZipEntry? = zipStream.nextEntry
 
-    cursor?.use {
-        if (it.moveToFirst()) {
-            // Get the display name column index
-            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (nameIndex != -1) {
-                fileName = it.getString(nameIndex).replace(".txt","")
+            while (entry != null) {
+                if (!entry.isDirectory && entry.name.endsWith(".txt")) {
+                    val title = entry.name
+                        .removeSuffix(".txt")
+                        .replace("_", " ")  // Reverse filename sanitization
+
+                    val content = buildString {
+                        val buffer = ByteArray(1024)
+                        var bytesRead: Int
+                        while (zipStream.read(buffer).also { bytesRead = it } != -1) {
+                            append(buffer.decodeToString(0, bytesRead))
+                        }
+                    }
+
+                    files.add(Notes(title = title, description = content))
+                }
+                entry = zipStream.nextEntry
             }
         }
     }
-    return fileName
+    return@withContext files
 }

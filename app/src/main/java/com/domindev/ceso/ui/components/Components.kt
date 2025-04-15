@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,12 +46,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.domindev.ceso.R
 import com.domindev.ceso.SettingsScreen
 import com.domindev.ceso.data.Notes
 import com.domindev.ceso.ui.event.Events
-import com.domindev.ceso.ui.screens.SettingsScreen
 import com.domindev.ceso.ui.state.State
 import com.domindev.ceso.ui.theme.bodyFontFamily
 import com.domindev.ceso.ui.theme.displayFontFamily

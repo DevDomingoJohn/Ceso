@@ -1,5 +1,6 @@
 package com.domindev.ceso.ui.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.domindev.ceso.ui.event.Events
@@ -8,6 +9,8 @@ import com.domindev.ceso.data.Notes
 import com.domindev.ceso.data.NotesDao
 import com.domindev.ceso.core.util.exportNote
 import com.domindev.ceso.core.util.exportNotes
+import com.domindev.ceso.core.util.readZipFile
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DataViewModel(
     private val dao: NotesDao
@@ -169,6 +173,26 @@ class DataViewModel(
                         context = event.context,
                         notes = state.value.notes
                     )
+                }
+            }
+
+            is Events.ImportNotes -> {
+                viewModelScope.launch {
+                    try {
+                        val contents = withContext(Dispatchers.IO) {
+                            readZipFile(event.context.contentResolver, event.uri)
+                        }
+                        contents.forEach { note ->
+                            val data = Notes(
+                                title = note.title,
+                                description = note.description
+                            )
+                            dao.upsert(data)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(event.context,"Error reading ZIP file ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                        e.printStackTrace()
+                    }
                 }
             }
         }

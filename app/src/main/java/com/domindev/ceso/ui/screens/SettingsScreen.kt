@@ -22,13 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.domindev.ceso.core.MyApp
-import com.domindev.ceso.NoteScreen
 import com.domindev.ceso.R
 import com.domindev.ceso.ui.components.CesoNavigationDrawer
 import com.domindev.ceso.ui.event.Events
 import com.domindev.ceso.ui.state.State
-import com.domindev.ceso.core.util.getFileNameFromUri
-import com.domindev.ceso.core.util.readTextFileFromUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,11 +44,7 @@ fun SettingsScreen(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri: Uri? ->
             uri?.let {
-                val fileName = getFileNameFromUri(context = context, it)
-                val fileContent = readTextFileFromUri(context = context, uri = it)
-                onEvent(Events.SetTitle("$fileName"))
-                onEvent(Events.SetDescription("$fileContent"))
-                navigateTo(NoteScreen)
+                onEvent(Events.ImportNotes(context = context,uri = it))
             }
         }
     )
@@ -94,7 +87,7 @@ fun SettingsScreen(
                     SettingsItem(
                         icon = ImageVector.vectorResource(R.drawable.file_download_24),
                         title = "Import Notes",
-                        onClick = { filePickerLauncher.launch(arrayOf("text/plain"))}
+                        onClick = { filePickerLauncher.launch(arrayOf("application/zip"))}
                     )
                     SettingsItem(
                         icon = ImageVector.vectorResource(R.drawable.upload_file_24),

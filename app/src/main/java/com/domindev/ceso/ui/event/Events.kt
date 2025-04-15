@@ -1,6 +1,7 @@
 package com.domindev.ceso.ui.event
 
 import android.content.Context
+import android.net.Uri
 import com.domindev.ceso.data.Notes
 
 sealed interface Events {
@@ -17,4 +18,5 @@ sealed interface Events {
 
     data class ShareNote(val context: Context): Events
     data class ExportNotes(val context: Context): Events
+    data class ImportNotes(val context: Context, val uri: Uri): Events
 }
